@@ -4,7 +4,6 @@ import cors from "cors";
 import "dotenv/config";
 
 import eventsRouter from "./routes/api/events-router.js";
-import userRouter from "./routes/api/user-router.js";
 
 const app = express();
 
@@ -15,7 +14,6 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/event", eventsRouter);
-app.use("/api/user", userRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });

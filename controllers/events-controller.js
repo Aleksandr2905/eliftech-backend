@@ -48,7 +48,23 @@ const getEventById = async (req, res) => {
   res.json(result);
 };
 
+const addUser = async (req, res) => {
+  const { id } = req.params;
+  const newUser = req.body;
+
+  const event = await Events.findById(id);
+  if (!event) {
+    throw HttpError(404, "Event not found");
+  }
+
+  event.user.push(newUser);
+  await event.save();
+
+  res.status(201).json(event);
+};
+
 export default {
   getAllEvents: ctrlWrapper(getAllEvents),
   getEventById: ctrlWrapper(getEventById),
+  addUser: ctrlWrapper(addUser),
 };
