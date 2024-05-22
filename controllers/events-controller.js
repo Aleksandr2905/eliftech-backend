@@ -50,12 +50,27 @@ const getEventById = async (req, res) => {
 
 const addUser = async (req, res) => {
   const { id } = req.params;
-  const newUser = req.body;
+  const { fullName, email, birthDate, source } = req.body;
 
   const event = await Events.findById(id);
   if (!event) {
     throw HttpError(404, "Event not found");
   }
+
+  const existingUser = event.user.find((user) => user.email === email);
+  if (existingUser) {
+    throw HttpError(
+      400,
+      "User with this email is already registered for the event"
+    );
+  }
+
+  const newUser = {
+    fullName,
+    email,
+    birthDate,
+    source,
+  };
 
   event.user.push(newUser);
   await event.save();
