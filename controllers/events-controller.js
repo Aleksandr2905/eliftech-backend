@@ -3,24 +3,13 @@ import HttpError from "../helpers/HttpError.js";
 import Events from "../models/Events.js";
 
 const getAllEvents = async (req, res) => {
-  const { title, event_date, organizer, page = 1, limit = 8 } = req.query;
+  const { page = 1, limit = 8 } = req.query;
   const skip = (page - 1) * limit;
-  let filter = {};
 
-  if (title) {
-    filter.title = { $regex: new RegExp(title, "i") };
-  }
-  if (event_date) {
-    filter.event_date = event_date;
-  }
-  if (organizer) {
-    filter.organizer = { $regex: new RegExp(organizer, "i") };
-  }
-
-  const totalEvents = await Events.countDocuments(filter);
+  const totalEvents = await Events.countDocuments();
   const totalPages = Math.ceil(totalEvents / limit);
 
-  const result = await Events.find(filter, "-createdAt -updatedAt", {
+  const result = await Events.find({}, "-createdAt -updatedAt", {
     skip,
     limit,
   });
